@@ -1,0 +1,257 @@
+--------------------------------------------------------
+-- CONSUMO MENSUAL PROMEDIO POR TALLA
+--------------------------------------------------------
+Consumo Mensual Promedio = 
+AVERAGEX ( 
+    VALUES ( Calendario[AñoMes] ),
+    [Total Salidas]
+)
+
+
+--------------------------------------------------------
+-- MEDIDA DE STOCK ACTUAL (TOTAL, BASADA EN bcm_stock)
+--------------------------------------------------------
+Stock Actual =
+VAR UltimaFechaGlobal =
+    CALCULATE (
+        MAX ( bcm_stock[fecha] ),
+        ALL ( bcm_stock )
+    )
+RETURN
+CALCULATE (
+    MAX ( bcm_stock[stock_acumulado] ),
+    FILTER (
+        ALL ( bcm_stock ),
+        bcm_stock[fecha] = UltimaFechaGlobal
+    )
+)
+
+
+--------------------------------------------------------
+-- ENTRADAS / SALIDAS (TOTALES) PARA VISUALES
+--------------------------------------------------------
+Total Entradas = 
+CALCULATE (
+    SUM ( bcm_hechos[cantidad_real] ),
+    FILTER ( bcm_hechos, bcm_hechos[cantidad_real] > 0 )
+)
+
+
+Total Salidas = 
+CALCULATE ( 
+    - SUM ( bcm_hechos[cantidad_real] ),
+    FILTER ( bcm_hechos, bcm_hechos[cantidad_real] < 0 )
+)
+
+--------------------------------------------------------
+-- STOCK ACTUAL POR TALLA (NETO ENTRADAS - SALIDAS)
+-- Basado en bcm_hechos (suma ponderada con signo)
+--------------------------------------------------------
+
+Stock Actual 34 =
+CALCULATE (
+    SUMX (
+        bcm_hechos,
+        VAR signo =
+            IF ( UPPER ( bcm_hechos[movimiento] ) = "ENTRADA", 1, -1 )
+        RETURN
+            signo * bcm_hechos[talla_34]
+    ),
+    ALL ( bcm_hechos )
+)
+
+Stock Actual 35 =
+CALCULATE (
+    SUMX (
+        bcm_hechos,
+        VAR signo =
+            IF ( UPPER ( bcm_hechos[movimiento] ) = "ENTRADA", 1, -1 )
+        RETURN
+            signo * bcm_hechos[talla_35]
+    ),
+    ALL ( bcm_hechos )
+)
+
+Stock Actual 36 =
+CALCULATE (
+    SUMX (
+        bcm_hechos,
+        VAR signo =
+            IF ( UPPER ( bcm_hechos[movimiento] ) = "ENTRADA", 1, -1 )
+        RETURN
+            signo * bcm_hechos[talla_36]
+    ),
+    ALL ( bcm_hechos )
+)
+
+Stock Actual 37 =
+CALCULATE (
+    SUMX (
+        bcm_hechos,
+        VAR signo =
+            IF ( UPPER ( bcm_hechos[movimiento] ) = "ENTRADA", 1, -1 )
+        RETURN
+            signo * bcm_hechos[talla_37]
+    ),
+    ALL ( bcm_hechos )
+)
+
+Stock Actual 38 =
+CALCULATE (
+    SUMX (
+        bcm_hechos,
+        VAR signo =
+            IF ( UPPER ( bcm_hechos[movimiento] ) = "ENTRADA", 1, -1 )
+        RETURN
+            signo * bcm_hechos[talla_38]
+    ),
+    ALL ( bcm_hechos )
+)
+
+Stock Actual 39 =
+CALCULATE (
+    SUMX (
+        bcm_hechos,
+        VAR signo =
+            IF ( UPPER ( bcm_hechos[movimiento] ) = "ENTRADA", 1, -1 )
+        RETURN
+            signo * bcm_hechos[talla_39]
+    ),
+    ALL ( bcm_hechos )
+)
+
+
+--------------------------------------------------------
+-- MEDIDA PARA VISUAL: STOCK ACTUAL POR TALLA
+-- (USO EN GRÁFICO DE BARRAS "Distribución actual por tallas (pares)")
+--------------------------------------------------------
+Stock por Talla =
+SWITCH (
+    SELECTEDVALUE ( Tallas[Talla] ),
+    "34", [Stock Actual 34],
+    "35", [Stock Actual 35],
+    "36", [Stock Actual 36],
+    "37", [Stock Actual 37],
+    "38", [Stock Actual 38],
+    "39", [Stock Actual 39]
+)
+
+
+--------------------------------------------------------
+-- CONSUMO MENSUAL (SOLO SALIDAS) POR TALLA
+-- RESPETA EL CONTEXTO DE MES (Calendario)
+--------------------------------------------------------
+
+Consumo Mensual 34 =
+CALCULATE (
+    SUM ( bcm_hechos[talla_34] ),
+    FILTER (
+        bcm_hechos,
+        UPPER ( bcm_hechos[movimiento] ) = "SALIDA"
+    )
+)
+
+Consumo Mensual 35 =
+CALCULATE (
+    SUM ( bcm_hechos[talla_35] ),
+    FILTER (
+        bcm_hechos,
+        UPPER ( bcm_hechos[movimiento] ) = "SALIDA"
+    )
+)
+
+Consumo Mensual 36 =
+CALCULATE (
+    SUM ( bcm_hechos[talla_36] ),
+    FILTER (
+        bcm_hechos,
+        UPPER ( bcm_hechos[movimiento] ) = "SALIDA"
+    )
+)
+
+Consumo Mensual 37 =
+CALCULATE (
+    SUM ( bcm_hechos[talla_37] ),
+    FILTER (
+        bcm_hechos,
+        UPPER ( bcm_hechos[movimiento] ) = "SALIDA"
+    )
+)
+
+Consumo Mensual 38 =
+CALCULATE (
+    SUM ( bcm_hechos[talla_38] ),
+    FILTER (
+        bcm_hechos,
+        UPPER ( bcm_hechos[movimiento] ) = "SALIDA"
+    )
+)
+
+Consumo Mensual 39 =
+CALCULATE (
+    SUM ( bcm_hechos[talla_39] ),
+    FILTER (
+        bcm_hechos,
+        UPPER ( bcm_hechos[movimiento] ) = "SALIDA"
+    )
+)
+
+
+--------------------------------------------------------
+-- PROMEDIO MENSUAL DE CONSUMO POR TALLA
+-- (SOBRE TODOS LOS MESES DEL PERÍODO)
+-- REQUIERE TABLA Calendario CON COLUMNA [AñoMes]
+--------------------------------------------------------
+
+Promedio Mensual 34 =
+AVERAGEX (
+    VALUES ( Calendario[AñoMes] ),
+    [Consumo Mensual 34]
+)
+
+Promedio Mensual 35 =
+AVERAGEX (
+    VALUES ( Calendario[AñoMes] ),
+    [Consumo Mensual 35]
+)
+
+Promedio Mensual 36 =
+AVERAGEX (
+    VALUES ( Calendario[AñoMes] ),
+    [Consumo Mensual 36]
+)
+
+Promedio Mensual 37 =
+AVERAGEX (
+    VALUES ( Calendario[AñoMes] ),
+    [Consumo Mensual 37]
+)
+
+Promedio Mensual 38 =
+AVERAGEX (
+    VALUES ( Calendario[AñoMes] ),
+    [Consumo Mensual 38]
+)
+
+Promedio Mensual 39 =
+AVERAGEX (
+    VALUES ( Calendario[AñoMes] ),
+    [Consumo Mensual 39]
+)
+
+
+--------------------------------------------------------
+-- MEDIDA PARA VISUAL:
+-- "CONSUMO MENSUAL PROMEDIO POR TALLA"
+-- (USO CON Tallas[Talla] EN EJE)
+--------------------------------------------------------
+Consumo Mensual Promedio por Talla =
+SWITCH (
+    SELECTEDVALUE ( Tallas[Talla] ),
+    "34", [Promedio Mensual 34],
+    "35", [Promedio Mensual 35],
+    "36", [Promedio Mensual 36],
+    "37", [Promedio Mensual 37],
+    "38", [Promedio Mensual 38],
+    "39", [Promedio Mensual 39]
+)
