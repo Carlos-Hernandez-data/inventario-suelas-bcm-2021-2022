@@ -23,7 +23,7 @@ El enfoque es **operativo y ejecutivo**, orientado a apoyar la toma de decisione
 - Proponer **cantidades recomendadas de compra** para 1–2 meses de demanda.
 
 ## Estructura del repositorio
-
+```
 inventario-suelas-bcm-2021-2022/
 ├── 01_data/
 │ ├── bcm_movimientos_original.xlsx
@@ -37,7 +37,7 @@ inventario-suelas-bcm-2021-2022/
 ├── 05_sql/
 │ └── sql_modelado_y_analisis_bcm.sql
 └── 06_README.md
-
+```
 ## Datos utilizados
 
 - **Fuente:** Registros internos de movimientos de inventario.
